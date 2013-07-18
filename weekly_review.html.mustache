@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head><title>Milliways Code Review Week of {{since_date}} to {{today}}</title>
+<style type="text/css">
+body{
+    width: 100%;
+}
+div.container {
+    width: 550px;
+    margin: 5px auto;
+    text-align: center;
+}
+
+.revList {
+    list-style-type: none;
+}
+
+textarea {
+    display: block;
+    width: 75%;
+    height: 50em;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<!--
+<script type="text/javascript">
+$(document).ready(function(){
+    $('button').click( function(){
+        var linkProcess = function(i, v){
+            var url = $(v).attr('href');
+            window.open(url, '_blank', 'resizable,scrollbars,status');
+        }
+
+        $.each( $("li a").get().reverse(), linkProcess);
+    });
+});
+</script>
+-->
+</head>
+<body>
+
+<div class="container">
+    <h1>Milliways Code Review Week of {{since_date}} to {{today}}</h1>
+    <ul class="revList">
+    {{#revs}}
+    <li><a href="https://bullhorn.beanstalkapp.com/ats/changesets/{{.}}" target="_blank">{{.}}</a></li>
+    {{/revs}}
+    </ul>
+    <!--
+    <p>Press the button to open everything</p>
+    <p><button>&gt;&gt; GO &lt;&lt;</button></p>
+    -->
+</div>
+<textarea readonly>{{raw_log}}</textarea>
+
+
+
+</body>
+</html>
