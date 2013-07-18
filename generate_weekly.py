@@ -1,16 +1,16 @@
 import shutil, git, re, pystache
 from datetime import date, timedelta
 
-GIT_DIR = "/home/jweede/bh/git-trunk"
+GIT_DIR = "/home/jweede/bh/coldfusion"
 template_name = "weekly_review"
 
 nginx_dir = "/usr/share/nginx/www/" # make sure you fix permissions or run as root
 
-rev_re = re.compile(r'\s*git-svn-id:.*@(\d+)\s')
+rev_re = re.compile(r'^\s*commit\s+([0-9a-f]+)\s*')
 
 def get_revs_from_git( since_date, git_dir=GIT_DIR):
     g = git.Git(git_dir)
-    log_output = g.log("--pretty=full","--since=%s" % since_date)
+    log_output = g.log("--all","--pretty=full","--since=%s" % since_date)
     #extract revs
     revs = []
     for line in log_output.split('\n'):
