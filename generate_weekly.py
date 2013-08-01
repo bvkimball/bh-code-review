@@ -16,16 +16,19 @@ def get_revs_from_git( since_date, git_dir=GIT_DIR):
     for line in log_output.split('\n'):
         m = rev_re.match(line)
         if m:
-            revs.append(m.group(1))
+            revs.append({'commit':m.group(1), 'log':''})
+        else:
+            revs[-1]['log'] += line + '\n'
+    return revs
+            
     # print revs
-    return { 'raw_log':log_output 
-           , 'revs':revs }
+    # return { 'raw_log': log_output.split(rev_re)
+           # , 'revs':revs }
 
 def generate_review_page_from_revs( revs_obj, since_date ):
     templ_vals = {'today': date.today().isoformat()
                  ,'since_date': since_date
-                 ,'raw_log': revs_obj['raw_log']
-                 ,'revs': revs_obj['revs']
+                 ,'revs': revs_obj
                  }
     mustache_name = '%s.html.mustache' % template_name
     output_name = '%s.html' % template_name

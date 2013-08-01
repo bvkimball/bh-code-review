@@ -8,13 +8,15 @@ body{
 div.container {
     width: 550px;
     margin: 5px auto;
+}
+h1,h2 {
     text-align: center;
 }
-
 .revList {
     list-style-type: none;
+    font-family: monospace;
+    text-align: left;
 }
-
 textarea {
     display: block;
     width: 75%;
@@ -44,17 +46,23 @@ $(document).ready(function(){
 <div class="container">
     <h1>Milliways Code Review </h1>
     <h2>Week of {{since_date}} to {{today}}</h2>
-    <ul class="revList">
+    <!-- <ul class="revList">
     {{#revs}}
     <li><a href="https://bullhorn.beanstalkapp.com/coldfusion/changesets/{{.}}" target="_blank">{{.}}</a></li>
     {{/revs}}
-    </ul>
+    </ul> -->
     <!--
     <p>Press the button to open everything</p>
     <p><button>&gt;&gt; GO &lt;&lt;</button></p>
     -->
+{{#revs}}
+<pre class="revList">
+<a href="https://bullhorn.beanstalkapp.com/coldfusion/changesets/{{commit}}" target="_blank">{{commit}}</a>
+{{log}}
+</pre>
+{{/revs}}
 </div>
-<textarea readonly>{{raw_log}}</textarea>
+<!-- <textarea readonly>{{raw_log}}</textarea> -->
 
 
 
