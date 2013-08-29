@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import shutil, git, re, pystache
 from datetime import date, timedelta
 
