@@ -8,6 +8,7 @@ template_name = "weekly_review"
 nginx_dir = "/usr/share/nginx/www/" # make sure you fix permissions or run as root
 
 rev_re = re.compile(r'^\s*commit\s+([0-9a-f]+)\s*')
+author_re = re.compile(r'^\s*[Aa]uthor: (.*<.*@.*>)')
 
 def get_revs_from_git( since_date, git_dir=GIT_DIR):
     g = git.Git(git_dir)
@@ -16,10 +17,15 @@ def get_revs_from_git( since_date, git_dir=GIT_DIR):
     revs = []
     for line in log_output.split('\n'):
         m = rev_re.match(line)
+        m_author = author_re.match(line)
         if m:
-            revs.append({'commit':m.group(1), 'log':''})
+            revs.append({'commit': m.group(1)
+                        ,'log': line + '\n'
+                        })
         else:
             revs[-1]['log'] += line + '\n'
+        if m_author:
+            revs[-1]['author'] = m_author.group(1)
     return revs
             
     # print revs

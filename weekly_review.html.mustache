@@ -24,6 +24,14 @@ textarea {
     margin-left: auto;
     margin-right: auto;
 }
+#authorsList {
+    height:200px;
+    width: 400px;
+    margin: 10 auto;
+}
+.hideThis {
+    display: none;
+}
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <!--
@@ -32,7 +40,7 @@ $(document).ready(function(){
     $('button').click( function(){
         var linkProcess = function(i, v){
             var url = $(v).attr('href');
-            window.open(url, '_blank', 'resizable,scrollbars,status');
+            window.open(url);
         }
 
         $.each( $("li a").get().reverse(), linkProcess);
@@ -40,23 +48,55 @@ $(document).ready(function(){
 });
 </script>
 -->
+<script type="text/javascript">
+$(document).ready(function(){
+    //populate a set of authors
+    var authors_dict = {};
+    $("input[name='author']").each(function(i,v){
+        authors_dict[ $(v).val() ] = null;
+    });
+    //convert to array
+    var authors_array = new Array();
+    for( var key in authors_dict ){
+        authors_array.push(key);
+    }
+    // then sort
+    authors_array.sort();
+    // fill the multi-select with authors
+    for( var key in authors_array ){
+        var item = authors_array[key];
+        var option = $(document.createElement("option"));
+        option.attr("value", item);
+        option.attr("selected", "selected");
+        $(option).text( item );
+        $("#authorsList").append(option);
+    }
+
+    //next setup the function
+    $("#authorsList").on('change', function(event){
+        var authorsList = $("#authorsList").val();
+        $(".revList").addClass("hideThis");
+        $("pre.revList").each(function(i,v){
+            var this_author = $("input[name='author']",v).val();
+            if ( -1 != $.inArray( this_author, authorsList) ){
+                $(v).removeClass("hideThis");
+            }
+        });
+    });
+});
+</script>
 </head>
 <body>
 
 <div class="container">
     <h1>Milliways Code Review </h1>
     <h2>Week of {{since_date}} to {{today}}</h2>
-    <!-- <ul class="revList">
-    {{#revs}}
-    <li><a href="https://bullhorn.beanstalkapp.com/coldfusion/changesets/{{.}}" target="_blank">{{.}}</a></li>
-    {{/revs}}
-    </ul> -->
-    <!--
-    <p>Press the button to open everything</p>
-    <p><button>&gt;&gt; GO &lt;&lt;</button></p>
-    -->
+
+<select id="authorsList" multiple="multiple" resizable="true">
+</select>
+
 {{#revs}}
-<pre class="revList">
+<pre class="revList"><input type="hidden" name="author" value="{{author}}">
 <a href="https://bullhorn.beanstalkapp.com/coldfusion/changesets/{{commit}}" target="_blank">{{commit}}</a>
 {{log}}
 </pre>
