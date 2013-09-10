@@ -24,32 +24,36 @@ textarea {
     margin-left: auto;
     margin-right: auto;
 }
-#authorsList {
+fieldset {
+    margin: 2px auto;
+    text-align: center;
+    border: 0px;
+}
+select#authorsList {
     height:200px;
     width: 400px;
-    margin: 10 auto;
+    margin: 10px auto;
+    display: block;
 }
-.hideThis {
-    display: none;
+button {
+    display: inline;
+    margin: 2px;
 }
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<!--
 <script type="text/javascript">
-$(document).ready(function(){
-    $('button').click( function(){
-        var linkProcess = function(i, v){
-            var url = $(v).attr('href');
-            window.open(url);
-        }
 
-        $.each( $("li a").get().reverse(), linkProcess);
-    });
-});
-</script>
--->
-<script type="text/javascript">
-$(document).ready(function(){
+function updateAuthorsList(event) {
+    var authorsList = $("#authorsList").val();
+    $("pre.revList").hide();
+
+    $("pre.revList").filter(function(i){
+        var this_author = $("input[name='author']", v).val();
+        return $.inArray( this_author, authorsList ) != -1
+    }).show();
+}
+
+function initializeAuthorsSelect() {
     //populate a set of authors
     var authors_dict = {};
     $("input[name='author']").each(function(i,v){
@@ -57,32 +61,46 @@ $(document).ready(function(){
     });
     //convert to array
     var authors_array = new Array();
-    for( var key in authors_dict ){
-        authors_array.push(key);
-    }
+    $.each(authors_dict, function(k, v){
+        authors_array,push( k );
+    });
     // then sort
     authors_array.sort();
     // fill the multi-select with authors
-    for( var key in authors_array ){
+    $.each(authors_array, function(i, key){
         var item = authors_array[key];
         var option = $(document.createElement("option"));
         option.attr("value", item);
         option.attr("selected", "selected");
         $(option).text( item );
         $("#authorsList").append(option);
-    }
-
-    //next setup the function
-    $("#authorsList").on('change', function(event){
-        var authorsList = $("#authorsList").val();
-        $(".revList").addClass("hideThis");
-        $("pre.revList").each(function(i,v){
-            var this_author = $("input[name='author']",v).val();
-            if ( -1 != $.inArray( this_author, authorsList) ){
-                $(v).removeClass("hideThis");
-            }
-        });
     });
+}
+
+function testAccess(event) {
+    window.open("https://bullhorn.beanstalkapp.com/coldfusion");
+}
+
+function openAllShown(event) {
+    var confirmed = window.confirm("This will open lots of tabs\nAre you sure?");
+    if (confirmed) {
+        $("pre.revList:visible a").each(function(i,v){
+            var href = v.getAttribute("href");
+            // var target = v.getAttribute("target");
+            var target = $(v).text();
+            window.open(href, target);
+        });
+    }
+}
+
+$(document).ready(function(){
+    initializeAuthorsSelect();
+
+    //next setup the hide/show event function
+    $("#authorsList").on('change', updateAuthorsList);
+    $("#testAccessButton").click(testAccess);
+    $("#goButton").click(openAllShown);
+
 });
 </script>
 </head>
@@ -92,8 +110,13 @@ $(document).ready(function(){
     <h1>Milliways Code Review </h1>
     <h2>Week of {{since_date}} to {{today}}</h2>
 
-<select id="authorsList" multiple="multiple" resizable="true">
+<fieldset>
+<select id="authorsList" multiple="multiple" autofocus="autofocus">
 </select>
+
+<button id="testAccessButton">Test Access</button>
+<button id="goButton">&gt;&gt; GO! &lt;&lt;</button>
+</fieldset>
 
 {{#revs}}
 <pre class="revList"><input type="hidden" name="author" value="{{author}}">
