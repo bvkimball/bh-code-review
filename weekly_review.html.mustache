@@ -48,27 +48,24 @@ function updateAuthorsList(event) {
     $("pre.revList").hide();
 
     $("pre.revList").filter(function(i){
-        var this_author = $("input[name='author']", v).val();
+        var this_author = $("input[name='author']", this).val();
         return $.inArray( this_author, authorsList ) != -1
     }).show();
 }
 
 function initializeAuthorsSelect() {
-    //populate a set of authors
-    var authors_dict = {};
-    $("input[name='author']").each(function(i,v){
-        authors_dict[ $(v).val() ] = null;
-    });
-    //convert to array
+    // populate a set of authors
     var authors_array = new Array();
-    $.each(authors_dict, function(k, v){
-        authors_array,push( k );
+    $("input[name='author']").each(function(i, v){
+        var name = $(v).val();
+        if( $.inArray(name, authors_array) == -1 ){
+            authors_array.push(name);
+        }
     });
     // then sort
     authors_array.sort();
     // fill the multi-select with authors
-    $.each(authors_array, function(i, key){
-        var item = authors_array[key];
+    $.each(authors_array, function(i, item){
         var option = $(document.createElement("option"));
         option.attr("value", item);
         option.attr("selected", "selected");
