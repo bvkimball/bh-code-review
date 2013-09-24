@@ -81,12 +81,21 @@ function testAccess(event) {
 function openAllShown(event) {
     var confirmed = window.confirm("This will open lots of tabs\nAre you sure?");
     if (confirmed) {
-        $("pre.revList:visible a").each(function(i,v){
-            var href = v.getAttribute("href");
-            // var target = v.getAttribute("target");
-            var target = $(v).text();
-            window.open(href, target);
-        });
+        var linkArray = $("pre.revList:visible a");
+
+        function openerFunc() {
+            if( linkArray.length > 0 ) {
+                var item = linkArray.pop()
+                var href = item.getAttribute("href");
+                var target = $(item).text();
+                window.open(href, target);
+            } else {
+                window.clearTimeout(window.openerPID);
+                window.openerPID = null;
+            }
+        }
+
+        window.openerPID = window.setInterval(openerFunc, 500);
     }
 }
 
