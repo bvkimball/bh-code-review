@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import shutil, git, re, pystache
+import codecs
 from datetime import date, timedelta
 
 GIT_DIR = "/home/jweede/bh/coldfusion"
@@ -12,7 +13,7 @@ author_re = re.compile(r'^\s*[Aa]uthor: (.*<.*@.*>)')
 
 def get_revs_from_git( since_date, git_dir=GIT_DIR):
     g = git.Git(git_dir)
-    log_output = g.log("--all","--pretty=full","--since=%s" % since_date)
+    log_output = g.log("--all","--pretty=full","--since=%s" % since_date).decode('ascii', 'ignore')
     #extract revs
     revs = []
     for line in log_output.split('\n'):
@@ -40,7 +41,7 @@ def generate_review_page_from_revs( revs_obj, since_date ):
     mustache_name = '%s.html.mustache' % template_name
     output_name = '%s.html' % template_name
 
-    with open(mustache_name,'r') as templatef, open(output_name,'w') as outputf:
+    with codecs.open(mustache_name,'r','utf-8') as templatef, codecs.open(output_name,'w','utf-8') as outputf:
         outputf.write( pystache.render(templatef.read(), templ_vals) )
 
 def copy_output_to_nginx():
