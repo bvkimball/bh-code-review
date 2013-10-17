@@ -81,7 +81,7 @@ function testAccess(event) {
 function openAllShown(event) {
     var confirmed = window.confirm("This will open lots of tabs\nAre you sure?");
     if (confirmed) {
-        var linkArray = $("pre.revList:visible a");
+        var linkArray = $("pre.revList:visible a").toArray();
 
         function openerFunc() {
             if( linkArray.length > 0 ) {
@@ -95,7 +95,7 @@ function openAllShown(event) {
             }
         }
 
-        window.openerPID = window.setInterval(openerFunc, 500);
+        window.openerPID = window.setInterval(openerFunc, 200);
     }
 }
 
