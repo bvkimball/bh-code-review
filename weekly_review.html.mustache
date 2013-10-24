@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head><title>Milliways Code Review Week of {{since_date}} to {{today}}</title>
+<head>
+<meta charset="utf-8">
+<title>Milliways Code Review Week of {{since_date}} to {{today}}</title>
 <style type="text/css">
 body{
     width: 100%;
@@ -39,15 +41,54 @@ button {
     display: inline;
     margin: 2px;
 }
+
+#reviewContainer {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.84);
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+#reviewButtons {
+    text-align: center;
+    margin: 5px auto;
+}
+
+#reviewButtons button {
+    font-family: Helvetica,Arial;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+#reviewPortal {
+    height: 88%;
+    margin: 10px 50px;
+    padding: 0px 0px;
+    background-color: #E4E4E4;
+    border: 6px ridge #1295B6;
+}
+
+#reviewPortal iframe {
+    width: 100%;
+    height: 100%;
+
+}
+
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 
 function updateAuthorsList(event) {
     var authorsList = $("#authorsList").val();
-    $("pre.revList").hide();
+    var revList = $("pre.revList");
+    revList.hide();
 
-    $("pre.revList").filter(function(i){
+    revList.filter(function(i){
         var this_author = $("input[name='author']", this).val();
         return $.inArray( this_author, authorsList ) != -1
     }).show();
@@ -69,7 +110,7 @@ function initializeAuthorsSelect() {
         var option = $(document.createElement("option"));
         option.attr("value", item);
         option.attr("selected", "selected");
-        $(option).text( item );
+        option.text( item );
         $("#authorsList").append(option);
     });
 }
@@ -79,7 +120,7 @@ function testAccess(event) {
 }
 
 function openAllShown(event) {
-    var confirmed = window.confirm("This will open lots of tabs\nAre you sure?");
+    var confirmed = window.confirm("This will open lots of stuff\nAre you sure?");
     if (confirmed) {
         var linkArray = $("pre.revList:visible a").toArray();
 
@@ -132,8 +173,17 @@ $(document).ready(function(){
 {{/revs}}
 </div>
 <!-- <textarea readonly>{{raw_log}}</textarea> -->
-
-
+<div id="reviewContainer">
+    <div id="reviewButtons">
+        <button>&#8635; Reload </button>
+        <button>&#8668; Previous</button>
+        <button>Next &#8669;</button>
+        <button>&#10005; Close</button>
+    </div>
+    <div id="reviewPortal">
+        <iframe src="https://bullhorn.beanstalkapp.com/coldfusion" seamless="seamless">
+    </div>
+</div>
 
 </body>
 </html>

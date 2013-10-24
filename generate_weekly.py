@@ -13,7 +13,12 @@ author_re = re.compile(r'^\s*[Aa]uthor: (.*<.*@.*>)')
 
 def get_revs_from_git( since_date, git_dir=GIT_DIR):
     g = git.Git(git_dir)
-    log_output = g.log("--all","--pretty=full","--since=%s" % since_date).decode('ascii', 'ignore')
+    format
+    log_output = g.log("--patch"
+                      ,"--all"
+                      ,"--pretty=format:\"%s\"" % format
+                      ,"--no-merges"
+                      ,"--since=%s" % since_date).decode('ascii', 'ignore')
     #extract revs
     revs = []
     for line in log_output.split('\n'):
