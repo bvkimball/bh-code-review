@@ -37,6 +37,7 @@ def generate_review_page_from_revs( revs_obj, since_date ):
     templ_vals = {'today': date.today().isoformat()
                  ,'since_date': since_date
                  ,'revs': revs_obj
+                 ,'revs_count': len(revs_obj)
                  }
     mustache_name = '%s.html.mustache' % template_name
     output_name = '%s.html' % template_name

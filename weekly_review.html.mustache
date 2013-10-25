@@ -45,12 +45,16 @@ button {
 
 function updateAuthorsList(event) {
     var authorsList = $("#authorsList").val();
-    $("pre.revList").hide();
+    var revList = $("pre.revList");
+    revList.hide();
 
-    $("pre.revList").filter(function(i){
+    var visibleRevs = revList.filter( function(i){
         var this_author = $("input[name='author']", this).val();
         return $.inArray( this_author, authorsList ) != -1
     }).show();
+    //update counts
+    $("#totalLinks").html( visibleRevs.length );
+    resetLinkArray();
 }
 
 function initializeAuthorsSelect() {
@@ -72,30 +76,42 @@ function initializeAuthorsSelect() {
         $(option).text( item );
         $("#authorsList").append(option);
     });
+    resetLinkArray();
 }
 
 function testAccess(event) {
     window.open("https://bullhorn.beanstalkapp.com/coldfusion");
 }
 
-function openAllShown(event) {
-    var confirmed = window.confirm("This will open lots of tabs\nAre you sure?");
-    if (confirmed) {
-        var linkArray = $("pre.revList:visible a").toArray();
+var linkArray = [];
 
-        function openerFunc() {
-            if( linkArray.length > 0 ) {
-                var item = linkArray.pop()
-                var href = item.getAttribute("href");
-                var target = $(item).text();
-                window.open(href, target);
-            } else {
-                window.clearTimeout(window.openerPID);
-                window.openerPID = null;
-            }
-        }
+function nextLinkFunction(event) {
+    var nextLinkCount = $("#nextLinkCount");
+    var nextLinkButton = $("#nextLinkButton");
 
-        window.openerPID = window.setInterval(openerFunc, 200);
+    var currentIndex = parseInt( nextLinkCount.text() );
+    if( isNaN(currentIndex) ) { currentIndex = 0; }
+
+
+    if( linkArray.length <= 0 || currentIndex >= linkArray.length ) {
+        nextLinkButton.attr('href', 'about:blank');
+        event.preventDefault();
+    } else {
+        nextLinkButton.attr('href', linkArray[currentIndex].getAttribute('href') );
+        currentIndex += 1;
+        nextLinkCount.text( currentIndex );
+    }
+
+}
+
+function resetLinkArray(){
+    linkArray = $("pre.revList:visible a").toArray();
+    $("#totalLinks").html( linkArray.length );
+    $("#nextLinkCount").html( 0 );
+    if( linkArray.length > 0 ){
+        $("#nextLinkButton").attr('href', linkArray[0].getAttribute("href"));
+    } else {
+        $("#nextLinkButton").attr('href', 'about:blank');
     }
 }
 
@@ -104,8 +120,9 @@ $(document).ready(function(){
 
     //next setup the hide/show event function
     $("#authorsList").on('change', updateAuthorsList);
-    $("#testAccessButton").click(testAccess);
-    $("#goButton").click(openAllShown);
+    $("#testAccessButton").click( testAccess );
+    $("#nextLinkButton").click( nextLinkFunction );
+    $("#resetLinksButton").click( resetLinkArray );
 
 });
 </script>
@@ -121,7 +138,10 @@ $(document).ready(function(){
 </select>
 
 <button id="testAccessButton">Test Access</button>
-<button id="goButton">&gt;&gt; GO! &lt;&lt;</button>
+<a id="nextLinkButton" href="about:blank" target="_blank">
+    Review Next <span id="nextLinkCount">0</span> of <span id="totalLinks">{{ revs_count }}</span>
+</a>
+<button id="resetLinksButton">Reset</button>
 </fieldset>
 
 {{#revs}}
