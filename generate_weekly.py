@@ -8,7 +8,7 @@ template_name = "weekly_review"
 
 nginx_dir = "/usr/share/nginx/www/" # make sure you fix permissions or run as root
 
-rev_re = re.compile(r'^\s*commit\s+([0-9a-f]+)\s*')
+rev_re    = re.compile(r'^\s*commit\s+([0-9a-f]+)\s*')
 author_re = re.compile(r'^\s*[Aa]uthor: (.*<.*@.*>)')
 
 def get_revs_from_git( since_date, git_dir=GIT_DIR):
@@ -40,7 +40,7 @@ def generate_review_page_from_revs( revs_obj, since_date ):
                  ,'revs_count': len(revs_obj)
                  }
     mustache_name = '%s.html.mustache' % template_name
-    output_name = '%s.html' % template_name
+    output_name   = '%s.html' % template_name
 
     with codecs.open(mustache_name,'r','utf-8') as templatef, codecs.open(output_name,'w','utf-8') as outputf:
         outputf.write( pystache.render(templatef.read(), templ_vals) )
